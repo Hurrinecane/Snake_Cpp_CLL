@@ -19,9 +19,11 @@ private:
 		Node* prev;
 	} *head, * tail;
 public:
-	enum Directions { UP, RIGHT, DOWN, LEFT };
+	Snake();
 	Snake(int MapSize_, int BlockSize_);
 	void Growing();
 	void Crawl(int direction_);
 	void Cut(Node* tmp, int SnakeSize, Node* tail, Node* head);
+	
+	enum Directions { UP, RIGHT, DOWN, LEFT };
 };

@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "Snake.h"
 
+Snake::Snake()
+{
+	this->BlockSize = this->MapSize = 0;
+	this->head = this->tail = nullptr;
+}
+
 Snake::Snake(int MapSize_, int BlockSize_)
 {
 	MapSize = MapSize_;

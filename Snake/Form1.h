@@ -42,7 +42,7 @@ namespace CppCLRWinformsProjekt {
 			backWhallImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\grass.bmp");
 			appleImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\apple.bmp");
 
-			Snake snake(mapSize, blockSize);
+			blockSize = mapField->Width / mapSize;
 
 			for (int i = 0; i < mapSize; i++)
 				mapMas[i] = new int[mapSize];
@@ -56,8 +56,7 @@ namespace CppCLRWinformsProjekt {
 				for (int j = 1; j < mapSize - 1; j++)
 					mapMas[i][j] = 0;
 			}
-			//***
-			blockSize = mapField->Width / mapSize;
+			//.
 		}
 
 	protected:
@@ -102,10 +101,11 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   this->mapField->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
 			   this->mapField->Location = System::Drawing::Point(12, 12);
+			   this->mapField->Margin = System::Windows::Forms::Padding(0, 0, 0, 3);
 			   this->mapField->Name = L"mapField";
 			   this->mapField->Size = System::Drawing::Size(500, 500);
 			   this->mapField->TabIndex = 0;
-			   this->mapField->Visible = false;
+			   this->mapField->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Snake_Game::Form1_Paint);
 			   // 
 			   // panel1
 			   // 
@@ -123,6 +123,7 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // StartButton
 			   // 
+			   this->StartButton->Cursor = System::Windows::Forms::Cursors::Hand;
 			   this->StartButton->Location = System::Drawing::Point(3, 3);
 			   this->StartButton->Name = L"StartButton";
 			   this->StartButton->Size = System::Drawing::Size(141, 43);
@@ -133,6 +134,7 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // PauseButton
 			   // 
+			   this->PauseButton->Cursor = System::Windows::Forms::Cursors::Hand;
 			   this->PauseButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 21.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				   static_cast<System::Byte>(204)));
 			   this->PauseButton->Location = System::Drawing::Point(52, 401);
@@ -145,6 +147,7 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // RightButton
 			   // 
+			   this->RightButton->Cursor = System::Windows::Forms::Cursors::PanEast;
 			   this->RightButton->Location = System::Drawing::Point(101, 401);
 			   this->RightButton->Name = L"RightButton";
 			   this->RightButton->Size = System::Drawing::Size(43, 43);
@@ -154,6 +157,7 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // UpButoon
 			   // 
+			   this->UpButoon->Cursor = System::Windows::Forms::Cursors::PanNorth;
 			   this->UpButoon->Location = System::Drawing::Point(52, 352);
 			   this->UpButoon->Name = L"UpButoon";
 			   this->UpButoon->Size = System::Drawing::Size(43, 43);
@@ -163,6 +167,7 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // DownButtom
 			   // 
+			   this->DownButtom->Cursor = System::Windows::Forms::Cursors::PanSouth;
 			   this->DownButtom->Location = System::Drawing::Point(52, 450);
 			   this->DownButtom->Name = L"DownButtom";
 			   this->DownButtom->Size = System::Drawing::Size(43, 43);
@@ -170,9 +175,10 @@ namespace CppCLRWinformsProjekt {
 			   this->DownButtom->Text = L"Down";
 			   this->DownButtom->UseMnemonic = false;
 			   this->DownButtom->UseVisualStyleBackColor = true;
-			   // 
+			   //
 			   // LeftButton
 			   // 
+			   this->LeftButton->Cursor = System::Windows::Forms::Cursors::PanWest;
 			   this->LeftButton->Location = System::Drawing::Point(3, 401);
 			   this->LeftButton->Name = L"LeftButton";
 			   this->LeftButton->Size = System::Drawing::Size(43, 43);
@@ -182,18 +188,17 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // Snake_Game
 			   // 
-			   this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
 			   this->ClientSize = System::Drawing::Size(679, 524);
 			   this->Controls->Add(this->panel1);
 			   this->Controls->Add(this->mapField);
 			   this->DoubleBuffered = true;
+			   this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
 			   this->MaximizeBox = false;
 			   this->Name = L"Snake_Game";
 			   this->ShowIcon = false;
 			   this->SizeGripStyle = System::Windows::Forms::SizeGripStyle::Hide;
 			   this->Text = L"Snake";
-			   this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Snake_Game::Form1_Paint);
 			   this->panel1->ResumeLayout(false);
 			   this->ResumeLayout(false);
 
@@ -203,6 +208,7 @@ namespace CppCLRWinformsProjekt {
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e)
 	{
 		this->Invalidate();
+
 	}
 	private: System::Void StartButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -228,27 +234,26 @@ namespace CppCLRWinformsProjekt {
 	}
 
 	private: System::Void DrawMap(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
-		   {
-			   for (int i = 0; i < mapSize; i++)
-				   for (int j = 0; j < mapSize; j++)
-				   {
-					   if (mapMas[i][j] == 0)
-					   {
-						   e->Graphics->DrawImage(backWhallImg, mapField->Location.X + i * blockSize, mapField->Location.Y + j * blockSize, blockSize, blockSize);
-					   }
-					   if (mapMas[i][j] == 1)
-					   {
-						   e->Graphics->DrawImage(whallImg, mapField->Location.X + i * blockSize, mapField->Location.Y + j * blockSize, blockSize, blockSize);
-					   }
-					   if (mapMas[i][j] == 2)
-					   {
-						   e->Graphics->DrawImage(appleImg, mapField->Location.X + i * blockSize, mapField->Location.Y + j * blockSize, blockSize, blockSize);
-					   }
-				   }
-		   }
+	{
+		for (int i = 0; i < mapSize; i++)
+			for (int j = 0; j < mapSize; j++)
+			{
+				if (mapMas[i][j] == 0)
+				{
+					e->Graphics->DrawImage(backWhallImg, i * blockSize, j * blockSize, blockSize, blockSize);
+				}
+				if (mapMas[i][j] == 1)
+				{
+					e->Graphics->DrawImage(whallImg, i * blockSize, j * blockSize, blockSize, blockSize);
+				}
+				if (mapMas[i][j] == 2)
+				{
+					e->Graphics->DrawImage(appleImg, i * blockSize, j * blockSize, blockSize, blockSize);
+				}
+			}
+	}
 	private: System::Void Form1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 	{
-		//отрисовка карты
 		DrawMap(sender, e);
 
 	}
