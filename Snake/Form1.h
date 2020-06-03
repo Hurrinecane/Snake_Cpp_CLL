@@ -20,14 +20,15 @@ namespace CppCLRWinformsProjekt {
 		Image^ whallImg;
 		Image^ backWhallImg;
 		Image^ appleImg;
-		Image^ headImg;
 		Image^ bodyImg;
+		Image^ headImg;
 
 		int mapSize = 15;
 		int offset = 12;
 		int** mapMas = new  int* [mapSize];
 		int blockSize;
 
+		double time = 0;
 		int appletime = 0;
 
 		bool apple = false;
@@ -42,6 +43,8 @@ namespace CppCLRWinformsProjekt {
 	private: System::Windows::Forms::Button^ UpButoon;
 	private: System::Windows::Forms::Button^ DownButtom;
 	private: System::Windows::Forms::Button^ LeftButton;
+	private: System::Windows::Forms::Label^ SnakeSizeLablel;
+	private: System::Windows::Forms::Label^ TimeLabel;
 
 	private: System::Windows::Forms::Button^ StartButton;
 
@@ -51,12 +54,11 @@ namespace CppCLRWinformsProjekt {
 			InitializeComponent();
 			this->DoubleBuffered = true;
 
-
 			whallImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\whall.bmp");
 			backWhallImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\grass.bmp");
 			appleImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\apple.bmp");
-			headImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Head.bmp");
 			bodyImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Body.bmp");
+			headImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Head.bmp");
 
 			blockSize = Width * 0.7 / mapSize;
 
@@ -100,12 +102,14 @@ namespace CppCLRWinformsProjekt {
 			   this->components = (gcnew System::ComponentModel::Container());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			   this->panel1 = (gcnew System::Windows::Forms::Panel());
+			   this->SnakeSizeLablel = (gcnew System::Windows::Forms::Label());
 			   this->StartButton = (gcnew System::Windows::Forms::Button());
 			   this->PauseButton = (gcnew System::Windows::Forms::Button());
 			   this->RightButton = (gcnew System::Windows::Forms::Button());
 			   this->UpButoon = (gcnew System::Windows::Forms::Button());
 			   this->DownButtom = (gcnew System::Windows::Forms::Button());
 			   this->LeftButton = (gcnew System::Windows::Forms::Button());
+			   this->TimeLabel = (gcnew System::Windows::Forms::Label());
 			   this->panel1->SuspendLayout();
 			   this->SuspendLayout();
 			   // 
@@ -117,6 +121,8 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   this->panel1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
 			   this->panel1->CausesValidation = false;
+			   this->panel1->Controls->Add(this->TimeLabel);
+			   this->panel1->Controls->Add(this->SnakeSizeLablel);
 			   this->panel1->Controls->Add(this->StartButton);
 			   this->panel1->Controls->Add(this->PauseButton);
 			   this->panel1->Controls->Add(this->RightButton);
@@ -127,6 +133,15 @@ namespace CppCLRWinformsProjekt {
 			   this->panel1->Name = L"panel1";
 			   this->panel1->Size = System::Drawing::Size(151, 500);
 			   this->panel1->TabIndex = 1;
+			   // 
+			   // SnakeSizeLable
+			   // 
+			   this->SnakeSizeLablel->AutoSize = true;
+			   this->SnakeSizeLablel->Location = System::Drawing::Point(4, 53);
+			   this->SnakeSizeLablel->Name = L"SnakeSizeLable";
+			   this->SnakeSizeLablel->Size = System::Drawing::Size(84, 13);
+			   this->SnakeSizeLablel->TabIndex = 6;
+			   this->SnakeSizeLablel->Text = L"Длина змейки:";
 			   // 
 			   // StartButton
 			   // 
@@ -203,6 +218,15 @@ namespace CppCLRWinformsProjekt {
 			   this->LeftButton->Click += gcnew System::EventHandler(this, &Snake_Game::LeftButton_Click);
 			   this->LeftButton->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
+			   // label1
+			   // 
+			   this->TimeLabel->AutoSize = true;
+			   this->TimeLabel->Location = System::Drawing::Point(4, 70);
+			   this->TimeLabel->Name = L"label1";
+			   this->TimeLabel->Size = System::Drawing::Size(113, 13);
+			   this->TimeLabel->TabIndex = 7;
+			   this->TimeLabel->Text = L"Колличество ходов:  ";
+			   // 
 			   // Snake_Game
 			   // 
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
@@ -218,6 +242,7 @@ namespace CppCLRWinformsProjekt {
 			   this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Snake_Game::mapField_Paint);
 			   this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   this->panel1->ResumeLayout(false);
+			   this->panel1->PerformLayout();
 			   this->ResumeLayout(false);
 
 		   }
@@ -231,6 +256,11 @@ namespace CppCLRWinformsProjekt {
 
 		snake->DelSnake();
 
+		SnakeSizeLablel->Text = L"Длина змейки: ";
+		TimeLabel->Text = L"Время: ";
+		time = 0;
+
+		direction = 1;
 		Running = false;
 		timer1->Stop();
 		StartButton->Text = "Start";
@@ -283,6 +313,11 @@ namespace CppCLRWinformsProjekt {
 		snake->Crawl(direction);
 
 		Collision();
+		if (!timer1->Enabled)
+			return;
+		time = time + double(timer1->Interval) / 1000;
+		SnakeSizeLablel->Text = L"Длина змейки: " + snake->SnakeSize;
+		TimeLabel->Text = L"Время: " + time;
 
 		if (!apple) appletime = appletime++;
 
@@ -297,7 +332,8 @@ namespace CppCLRWinformsProjekt {
 	}
 #pragma endregion
 
-#pragma region drawing		   
+#pragma region drawing
+
 	private: System::Void DrawMap(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 	{
 		for (int i = 0; i < mapSize; i++)
@@ -337,21 +373,26 @@ namespace CppCLRWinformsProjekt {
 	}
 #pragma endregion
 
-#pragma region Control		   
+#pragma region Control
+
 	private: System::Void Snake_Game_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
 	{
 		switch (e->KeyCode) {
 		case Keys::D:
-			direction = RIGHT;
+			if (direction != LEFT)
+				direction = RIGHT;
 			break;
 		case Keys::A:
-			direction = LEFT;
+			if (direction != RIGHT)
+				direction = LEFT;
 			break;
 		case Keys::W:
-			direction = UP;
+			if (direction != DOWN)
+				direction = UP;
 			break;
 		case Keys::S:
-			direction = DOWN;
+			if (direction != UP)
+				direction = DOWN;
 			break;
 		case Keys::P:
 			if (timer1->Enabled)
@@ -380,19 +421,23 @@ namespace CppCLRWinformsProjekt {
 	}
 	private: System::Void UpButoon_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		direction = UP;
+		if (direction != DOWN)
+			direction = UP;
 	}
 	private: System::Void DownButtom_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		direction = DOWN;
+		if (direction != UP)
+			direction = DOWN;
 	}
 	private: System::Void RightButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		direction = RIGHT;
+		if (direction != LEFT)
+			direction = RIGHT;
 	}
 	private: System::Void LeftButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		direction = LEFT;
+		if (direction != RIGHT)
+			direction = LEFT;
 	}
 	private: System::Void PauseButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -402,6 +447,5 @@ namespace CppCLRWinformsProjekt {
 			timer1->Start();
 	}
 #pragma endregion
-
 	};
 }

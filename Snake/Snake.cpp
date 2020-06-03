@@ -86,7 +86,3 @@ void Snake::Cut(Node* tmp)
 	}
 
 }
-void Colision()
-{
-
-}
