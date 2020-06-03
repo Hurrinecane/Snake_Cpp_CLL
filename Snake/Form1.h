@@ -45,6 +45,7 @@ namespace CppCLRWinformsProjekt {
 	private: System::Windows::Forms::Button^ LeftButton;
 	private: System::Windows::Forms::Label^ SnakeSizeLablel;
 	private: System::Windows::Forms::Label^ TimeLabel;
+	private: System::Windows::Forms::Label^ label1;
 
 	private: System::Windows::Forms::Button^ StartButton;
 
@@ -60,7 +61,7 @@ namespace CppCLRWinformsProjekt {
 			bodyImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Body.bmp");
 			headImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Head.bmp");
 
-			blockSize = Width * 0.7 / mapSize;
+			blockSize = Width * 0.73 / mapSize;
 
 			for (int i = 0; i < mapSize; i++)
 				mapMas[i] = new int[mapSize];
@@ -102,6 +103,7 @@ namespace CppCLRWinformsProjekt {
 			   this->components = (gcnew System::ComponentModel::Container());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			   this->panel1 = (gcnew System::Windows::Forms::Panel());
+			   this->TimeLabel = (gcnew System::Windows::Forms::Label());
 			   this->SnakeSizeLablel = (gcnew System::Windows::Forms::Label());
 			   this->StartButton = (gcnew System::Windows::Forms::Button());
 			   this->PauseButton = (gcnew System::Windows::Forms::Button());
@@ -109,7 +111,7 @@ namespace CppCLRWinformsProjekt {
 			   this->UpButoon = (gcnew System::Windows::Forms::Button());
 			   this->DownButtom = (gcnew System::Windows::Forms::Button());
 			   this->LeftButton = (gcnew System::Windows::Forms::Button());
-			   this->TimeLabel = (gcnew System::Windows::Forms::Label());
+			   this->label1 = (gcnew System::Windows::Forms::Label());
 			   this->panel1->SuspendLayout();
 			   this->SuspendLayout();
 			   // 
@@ -121,6 +123,7 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   this->panel1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
 			   this->panel1->CausesValidation = false;
+			   this->panel1->Controls->Add(this->label1);
 			   this->panel1->Controls->Add(this->TimeLabel);
 			   this->panel1->Controls->Add(this->SnakeSizeLablel);
 			   this->panel1->Controls->Add(this->StartButton);
@@ -134,11 +137,20 @@ namespace CppCLRWinformsProjekt {
 			   this->panel1->Size = System::Drawing::Size(151, 500);
 			   this->panel1->TabIndex = 1;
 			   // 
-			   // SnakeSizeLable
+			   // TimeLabel
+			   // 
+			   this->TimeLabel->AutoSize = true;
+			   this->TimeLabel->Location = System::Drawing::Point(4, 70);
+			   this->TimeLabel->Name = L"TimeLabel";
+			   this->TimeLabel->Size = System::Drawing::Size(113, 13);
+			   this->TimeLabel->TabIndex = 7;
+			   this->TimeLabel->Text = L"Колличество ходов:  ";
+			   // 
+			   // SnakeSizeLablel
 			   // 
 			   this->SnakeSizeLablel->AutoSize = true;
 			   this->SnakeSizeLablel->Location = System::Drawing::Point(4, 53);
-			   this->SnakeSizeLablel->Name = L"SnakeSizeLable";
+			   this->SnakeSizeLablel->Name = L"SnakeSizeLablel";
 			   this->SnakeSizeLablel->Size = System::Drawing::Size(84, 13);
 			   this->SnakeSizeLablel->TabIndex = 6;
 			   this->SnakeSizeLablel->Text = L"Длина змейки:";
@@ -220,12 +232,14 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   // label1
 			   // 
-			   this->TimeLabel->AutoSize = true;
-			   this->TimeLabel->Location = System::Drawing::Point(4, 70);
-			   this->TimeLabel->Name = L"label1";
-			   this->TimeLabel->Size = System::Drawing::Size(113, 13);
-			   this->TimeLabel->TabIndex = 7;
-			   this->TimeLabel->Text = L"Колличество ходов:  ";
+			   this->label1->AutoSize = true;
+			   this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->label1->Location = System::Drawing::Point(3, 83);
+			   this->label1->Name = L"label1";
+			   this->label1->Size = System::Drawing::Size(72, 91);
+			   this->label1->TabIndex = 8;
+			   this->label1->Text = L"\r\nУправление:\r\nW - Вверх;\r\nS - Вниз;\r\nA - Влево;\r\nD - Вправо;\r\nP - Пауза; ";
 			   // 
 			   // Snake_Game
 			   // 
