@@ -23,10 +23,11 @@ namespace CppCLRWinformsProjekt {
 		Image^ bodyImg;
 
 		int mapSize = 15;
+		int offset = 12;
 		int** mapMas = new  int* [mapSize];
 		int blockSize;
 
-	private: System::Windows::Forms::Panel^ mapField;
+
 	private: System::Windows::Forms::Panel^ panel1;
 
 	private: System::Windows::Forms::Button^ PauseButton;
@@ -50,7 +51,7 @@ namespace CppCLRWinformsProjekt {
 			headImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Head.bmp");
 			bodyImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Body.bmp");
 
-			blockSize = mapField->Width / mapSize;
+			blockSize = Width *0.7 / mapSize;
 
 			for (int i = 0; i < mapSize; i++)
 				mapMas[i] = new int[mapSize];
@@ -92,7 +93,6 @@ namespace CppCLRWinformsProjekt {
 		   {
 			   this->components = (gcnew System::ComponentModel::Container());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
-			   this->mapField = (gcnew System::Windows::Forms::Panel());
 			   this->panel1 = (gcnew System::Windows::Forms::Panel());
 			   this->StartButton = (gcnew System::Windows::Forms::Button());
 			   this->PauseButton = (gcnew System::Windows::Forms::Button());
@@ -106,17 +106,6 @@ namespace CppCLRWinformsProjekt {
 			   // timer1
 			   // 
 			   this->timer1->Tick += gcnew System::EventHandler(this, &Snake_Game::timer1_Tick);
-			   // 
-			   // mapField
-			   // 
-			   this->mapField->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-			   this->mapField->Location = System::Drawing::Point(12, 12);
-			   this->mapField->Margin = System::Windows::Forms::Padding(0, 0, 0, 3);
-			   this->mapField->Name = L"mapField";
-			   this->mapField->Size = System::Drawing::Size(500, 500);
-			   this->mapField->TabIndex = 0;
-			   this->mapField->TabStop = true;
-			   this->mapField->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Snake_Game::mapField_Paint);
 			   // 
 			   // panel1
 			   // 
@@ -207,7 +196,6 @@ namespace CppCLRWinformsProjekt {
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
 			   this->ClientSize = System::Drawing::Size(679, 524);
 			   this->Controls->Add(this->panel1);
-			   this->Controls->Add(this->mapField);
 			   this->DoubleBuffered = true;
 			   this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
 			   this->MaximizeBox = false;
@@ -215,6 +203,7 @@ namespace CppCLRWinformsProjekt {
 			   this->ShowIcon = false;
 			   this->SizeGripStyle = System::Windows::Forms::SizeGripStyle::Hide;
 			   this->Text = L"Snake";
+			   this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Snake_Game::mapField_Paint);
 			   this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   this->panel1->ResumeLayout(false);
 			   this->ResumeLayout(false);
@@ -224,7 +213,7 @@ namespace CppCLRWinformsProjekt {
 
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e)
 	{
-		mapField->Invalidate();
+		Invalidate();
 		snake->Crawl(direction);
 
 		//...
@@ -260,15 +249,15 @@ namespace CppCLRWinformsProjekt {
 			{
 				if (mapMas[i][j] == 0)
 				{
-					e->Graphics->DrawImage(backWhallImg, i * blockSize, j * blockSize, blockSize, blockSize);
+					e->Graphics->DrawImage(backWhallImg, offset + i * blockSize, offset + j * blockSize, blockSize, blockSize);
 				}
 				if (mapMas[i][j] == 1)
 				{
-					e->Graphics->DrawImage(whallImg, i * blockSize, j * blockSize, blockSize, blockSize);
+					e->Graphics->DrawImage(whallImg, offset + i * blockSize, offset + j * blockSize, blockSize, blockSize);
 				}
 				if (mapMas[i][j] == 2)
 				{
-					e->Graphics->DrawImage(appleImg, i * blockSize, j * blockSize, blockSize, blockSize);
+					e->Graphics->DrawImage(appleImg, offset + i * blockSize, offset + j * blockSize, blockSize, blockSize);
 				}
 			}
 	}
@@ -276,9 +265,9 @@ namespace CppCLRWinformsProjekt {
 	{
 		for (Node* tmp = snake->tail; tmp != snake->head; tmp = tmp->next)
 		{
-			e->Graphics->DrawImage(bodyImg, tmp->x * blockSize, tmp->y * blockSize, blockSize, blockSize);
+			e->Graphics->DrawImage(bodyImg, offset + tmp->x * blockSize, offset + tmp->y * blockSize, blockSize, blockSize);
 		}
-		e->Graphics->DrawImage(headImg, snake->head->x * blockSize, snake->head->y * blockSize, blockSize, blockSize);
+		e->Graphics->DrawImage(headImg, offset + snake->head->x * blockSize, offset + snake->head->y * blockSize, blockSize, blockSize);
 
 	}
 	private: System::Void mapField_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
