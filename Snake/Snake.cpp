@@ -3,21 +3,21 @@
 
 Snake::Snake()
 {
-	this->BlockSize = this->MapSize = 0;
+	
 	this->head = this->tail = nullptr;
 }
 
-Snake::Snake(int MapSize_, int BlockSize_)
+void Snake::CreateSnake(int MapSize_)
 {
-	MapSize = MapSize_;
-	BlockSize = BlockSize_;
+	
 
 	head = new Node;
 	head->prev = tail = new Node;
-	head->next = nullptr;
-	head->block.height = head->block.width = BlockSize;
-	head->block.x = head->block.y = 0;
-	head->direction = UP;
+	head->next = tail->prev = nullptr;
+	tail->next = head;
+
+	head->x = head->y = tail->x = tail->y = MapSize_ / 2;
+	head->direction = tail->direction = RIGHT;
 }
 
 void Snake::Growing()
@@ -26,8 +26,8 @@ void Snake::Growing()
 	tmp->next = tail;
 	tmp->prev = nullptr;
 
-	tmp->block.x = tail->block.x;
-	tmp->block.y = tail->block.y;
+	tmp->x = tail->x;
+	tmp->y = tail->y;
 	tmp->direction = tail->direction;
 
 	tail->prev = tmp;
@@ -48,24 +48,29 @@ void Snake::Crawl(int direction_)
 	switch (direction_)
 	{
 	case UP:
-		head->block.y -= 1;
+		head->x = head->prev->x;
+		head->y = head->prev->y - 1;
 		head->prev->direction = head->direction = UP;
 		break;
 	case RIGHT:
-		head->block.x += 1;
+		head->x = head->prev->x + 1;
+		head->y = head->prev->y;
 		head->prev->direction = head->direction = RIGHT;
 		break;
 	case DOWN:
-		head->block.y += 1;
+		head->x = head->prev->x;
+		head->y = head->prev->y + 1;
 		head->prev->direction = head->direction = DOWN;
 		break;
 	case LEFT:
-		head->block.x -= 1;
+		head->x = head->prev->x - 1;
+		head->y = head->prev->y;
 		head->prev->direction = head->direction = LEFT;
 		break;
 	}
 }
-void Snake::Cut(Node* tmp, int SnakeSize, Node* tail, Node* head)
+
+void Snake::Cut(Node* tmp)
 {
 	for (tail; tail != tmp; tail = tail->prev)
 	{
@@ -74,7 +79,7 @@ void Snake::Cut(Node* tmp, int SnakeSize, Node* tail, Node* head)
 		SnakeSize--;
 	}
 }
-	void Colision()
-	{
+void Colision()
+{
 
-	}
+}

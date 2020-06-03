@@ -1,29 +1,26 @@
 #pragma once
 
-class Snake
+enum Directions { UP, RIGHT, DOWN, LEFT };
+
+struct Node
+{
+	int direction;
+		int x, y;	
+
+	Node* next;
+	Node* prev;
+};
+
+ref class Snake
 {
 private:
-	int MapSize, BlockSize;
-
 	int SnakeSize;
 
-	struct Node
-	{
-		int direction;
-		struct
-		{
-			int x, y, width, height;
-		} block;
-
-		Node* next;
-		Node* prev;
-	} *head, * tail;
 public:
+	Node *head, * tail;
 	Snake();
-	Snake(int MapSize_, int BlockSize_);
+	void CreateSnake(int MapSize_);
 	void Growing();
 	void Crawl(int direction_);
-	void Cut(Node* tmp, int SnakeSize, Node* tail, Node* head);
-	
-	enum Directions { UP, RIGHT, DOWN, LEFT };
+	void Cut(Node* tmp);
 };
