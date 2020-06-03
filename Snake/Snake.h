@@ -13,13 +13,12 @@ struct Node
 
 ref class Snake
 {
-private:
-	int SnakeSize;
-
 public:
+	int SnakeSize;
 	Node *head, * tail;
 	Snake();
 	void CreateSnake(int MapSize_);
+	void DelSnake();
 	void Growing();
 	void Crawl(int direction_);
 	void Cut(Node* tmp);

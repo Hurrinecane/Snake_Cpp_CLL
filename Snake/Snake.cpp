@@ -3,14 +3,11 @@
 
 Snake::Snake()
 {
-	
 	this->head = this->tail = nullptr;
 }
 
 void Snake::CreateSnake(int MapSize_)
 {
-	
-
 	head = new Node;
 	head->prev = tail = new Node;
 	head->next = tail->prev = nullptr;
@@ -18,6 +15,14 @@ void Snake::CreateSnake(int MapSize_)
 
 	head->x = head->y = tail->x = tail->y = MapSize_ / 2;
 	head->direction = tail->direction = RIGHT;
+	SnakeSize = 2;
+}
+
+void Snake::DelSnake()
+{
+	Cut(head);
+	delete head;
+	SnakeSize--;
 }
 
 void Snake::Growing()
@@ -72,12 +77,14 @@ void Snake::Crawl(int direction_)
 
 void Snake::Cut(Node* tmp)
 {
-	for (tail; tail != tmp; tail = tail->prev)
+	for (tail; tail != tmp;)
 	{
-		delete(tail->next);
-		tail->next = nullptr;
+		tail = tail->next;
+		delete(tail->prev);
+		tail->prev = nullptr;
 		SnakeSize--;
 	}
+
 }
 void Colision()
 {

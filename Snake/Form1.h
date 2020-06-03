@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Snake.h"
 
+
 namespace CppCLRWinformsProjekt {
 
 	using namespace System;
@@ -14,7 +15,7 @@ namespace CppCLRWinformsProjekt {
 	{
 	private:
 		Snake^ snake = gcnew Snake();
-		int direction;
+		int direction = RIGHT;
 
 		Image^ whallImg;
 		Image^ backWhallImg;
@@ -26,6 +27,12 @@ namespace CppCLRWinformsProjekt {
 		int offset = 12;
 		int** mapMas = new  int* [mapSize];
 		int blockSize;
+
+		int appletime = 0;
+
+		bool apple = false;
+		bool Running = false;
+		bool lose = false;
 
 
 	private: System::Windows::Forms::Panel^ panel1;
@@ -51,7 +58,7 @@ namespace CppCLRWinformsProjekt {
 			headImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Head.bmp");
 			bodyImg = Bitmap::FromFile(Application::StartupPath + "\\Textures\\Body.bmp");
 
-			blockSize = Width *0.7 / mapSize;
+			blockSize = Width * 0.7 / mapSize;
 
 			for (int i = 0; i < mapSize; i++)
 				mapMas[i] = new int[mapSize];
@@ -88,7 +95,6 @@ namespace CppCLRWinformsProjekt {
 	private: System::Windows::Forms::Timer^ timer1;
 
 #pragma region Windows Form Designer generated code
-
 		   void InitializeComponent(void)
 		   {
 			   this->components = (gcnew System::ComponentModel::Container());
@@ -132,6 +138,7 @@ namespace CppCLRWinformsProjekt {
 			   this->StartButton->Text = L"Start";
 			   this->StartButton->UseVisualStyleBackColor = true;
 			   this->StartButton->Click += gcnew System::EventHandler(this, &Snake_Game::StartButton_Click);
+			   this->StartButton->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
 			   // PauseButton
 			   // 
@@ -145,6 +152,7 @@ namespace CppCLRWinformsProjekt {
 			   this->PauseButton->Text = L"⏯";
 			   this->PauseButton->UseVisualStyleBackColor = true;
 			   this->PauseButton->Click += gcnew System::EventHandler(this, &Snake_Game::PauseButton_Click);
+			   this->PauseButton->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
 			   // RightButton
 			   // 
@@ -156,6 +164,7 @@ namespace CppCLRWinformsProjekt {
 			   this->RightButton->Text = L"Right";
 			   this->RightButton->UseVisualStyleBackColor = true;
 			   this->RightButton->Click += gcnew System::EventHandler(this, &Snake_Game::RightButton_Click);
+			   this->RightButton->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
 			   // UpButoon
 			   // 
@@ -167,6 +176,7 @@ namespace CppCLRWinformsProjekt {
 			   this->UpButoon->Text = L"Up";
 			   this->UpButoon->UseVisualStyleBackColor = true;
 			   this->UpButoon->Click += gcnew System::EventHandler(this, &Snake_Game::UpButoon_Click);
+			   this->UpButoon->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
 			   // DownButtom
 			   // 
@@ -179,6 +189,7 @@ namespace CppCLRWinformsProjekt {
 			   this->DownButtom->UseMnemonic = false;
 			   this->DownButtom->UseVisualStyleBackColor = true;
 			   this->DownButtom->Click += gcnew System::EventHandler(this, &Snake_Game::DownButtom_Click);
+			   this->DownButtom->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
 			   // LeftButton
 			   // 
@@ -190,6 +201,7 @@ namespace CppCLRWinformsProjekt {
 			   this->LeftButton->Text = L"Left";
 			   this->LeftButton->UseVisualStyleBackColor = true;
 			   this->LeftButton->Click += gcnew System::EventHandler(this, &Snake_Game::LeftButton_Click);
+			   this->LeftButton->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
 			   // Snake_Game
 			   // 
@@ -211,56 +223,104 @@ namespace CppCLRWinformsProjekt {
 		   }
 #pragma endregion
 
+#pragma region Logic
+
+	private:   System::Void Annul()
+	{
+		appletime = 0;
+
+		snake->DelSnake();
+
+		Running = false;
+		timer1->Stop();
+		StartButton->Text = "Start";
+	}
+
+	private:   System::Void Collision()
+	{
+		if (mapMas[snake->head->y][snake->head->x] == 1)
+		{
+			Annul();
+			snake->CreateSnake(mapSize);
+			return;
+		}
+		for (Node* cur = snake->head->prev; cur != nullptr; cur = cur->prev)
+		{
+			if (snake->head->x == cur->x && snake->head->y == cur->y)
+			{
+				snake->Cut(cur->next);
+				break;
+			}
+		}
+
+		if (mapMas[snake->head->y][snake->head->x] == 2)
+		{
+			mapMas[snake->head->y][snake->head->x] = 0;
+			snake->Growing();
+			apple = false;
+		}
+	}
+
+	private:   System::Void Apple()
+	{
+		int x, y;
+		do
+		{
+			bool check = true;
+			x = rand() % (mapSize - 1) + 1;
+			y = rand() % (mapSize - 1) + 1;
+			for (Node* tmp = snake->head; tmp != nullptr; tmp = tmp->next)
+				if (x == tmp->x || y == tmp->y || mapMas[y][x] != 0)
+					check = false;
+
+			if (check) mapMas[y][x] = 2;
+		} while (mapMas[y][x] != 2);
+	}
+
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e)
 	{
 		Invalidate();
 		snake->Crawl(direction);
 
+		Collision();
+
+		if (!apple) appletime = appletime++;
+
+		if (appletime > 5 && apple == false)
+		{
+			Apple();
+			appletime = 0;
+			apple = true;
+		}
+
 		//...
 	}
-	private: System::Void StartButton_Click(System::Object^ sender, System::EventArgs^ e)
-	{
-		if (timer1->Enabled)
-		{
-			timer1->Stop();
-			StartButton->Text = "Start";
-			//...
-		}
-		else
-		{
-			timer1->Start();
-			timer1->Interval = 1000;
-			StartButton->Text = "Restart";
-		}
+#pragma endregion
 
-	}
-	private: System::Void PauseButton_Click(System::Object^ sender, System::EventArgs^ e)
-	{
-		if (timer1->Enabled)
-			timer1->Stop();
-		else
-			timer1->Start();
-	}
-
+#pragma region drawing		   
 	private: System::Void DrawMap(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 	{
 		for (int i = 0; i < mapSize; i++)
 			for (int j = 0; j < mapSize; j++)
 			{
-				if (mapMas[i][j] == 0)
+				switch (mapMas[j][i])
 				{
+				case 0:
 					e->Graphics->DrawImage(backWhallImg, offset + i * blockSize, offset + j * blockSize, blockSize, blockSize);
-				}
-				if (mapMas[i][j] == 1)
-				{
+					break;
+				case 1:
 					e->Graphics->DrawImage(whallImg, offset + i * blockSize, offset + j * blockSize, blockSize, blockSize);
-				}
-				if (mapMas[i][j] == 2)
-				{
+					break;
+				case 2:
 					e->Graphics->DrawImage(appleImg, offset + i * blockSize, offset + j * blockSize, blockSize, blockSize);
+					break;
+				case 3:
+
+					break;
 				}
 			}
 	}
+
 	private: System::Void DrawSnake(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e)
 	{
 		for (Node* tmp = snake->tail; tmp != snake->head; tmp = tmp->next)
@@ -275,6 +335,9 @@ namespace CppCLRWinformsProjekt {
 		DrawMap(sender, e);
 		DrawSnake(sender, e);
 	}
+#pragma endregion
+
+#pragma region Control		   
 	private: System::Void Snake_Game_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
 	{
 		switch (e->KeyCode) {
@@ -290,6 +353,29 @@ namespace CppCLRWinformsProjekt {
 		case Keys::S:
 			direction = DOWN;
 			break;
+		case Keys::P:
+			if (timer1->Enabled)
+				timer1->Stop();
+			else
+				timer1->Start();
+			break;
+		}
+	}
+
+	private: System::Void StartButton_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (Running)
+		{
+			Annul();
+			Invalidate();
+			snake->CreateSnake(mapSize);
+		}
+		else
+		{
+			Running = true;
+			timer1->Start();
+			timer1->Interval = 500;
+			StartButton->Text = "Restart";
 		}
 	}
 	private: System::Void UpButoon_Click(System::Object^ sender, System::EventArgs^ e)
@@ -308,5 +394,14 @@ namespace CppCLRWinformsProjekt {
 	{
 		direction = LEFT;
 	}
-};
+	private: System::Void PauseButton_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (timer1->Enabled)
+			timer1->Stop();
+		else
+			timer1->Start();
+	}
+#pragma endregion
+
+	};
 }
