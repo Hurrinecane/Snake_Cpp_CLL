@@ -43,9 +43,9 @@ namespace CppCLRWinformsProjekt {
 	private: System::Windows::Forms::Button^ UpButoon;
 	private: System::Windows::Forms::Button^ DownButtom;
 	private: System::Windows::Forms::Button^ LeftButton;
-	private: System::Windows::Forms::Label^ SnakeSizeLablel;
+	private: System::Windows::Forms::Label^ SnakeSizeLabel;
 	private: System::Windows::Forms::Label^ TimeLabel;
-	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ InfoLabel;
 
 	private: System::Windows::Forms::Button^ StartButton;
 
@@ -103,15 +103,15 @@ namespace CppCLRWinformsProjekt {
 			   this->components = (gcnew System::ComponentModel::Container());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			   this->panel1 = (gcnew System::Windows::Forms::Panel());
+			   this->InfoLabel = (gcnew System::Windows::Forms::Label());
 			   this->TimeLabel = (gcnew System::Windows::Forms::Label());
-			   this->SnakeSizeLablel = (gcnew System::Windows::Forms::Label());
+			   this->SnakeSizeLabel = (gcnew System::Windows::Forms::Label());
 			   this->StartButton = (gcnew System::Windows::Forms::Button());
 			   this->PauseButton = (gcnew System::Windows::Forms::Button());
 			   this->RightButton = (gcnew System::Windows::Forms::Button());
 			   this->UpButoon = (gcnew System::Windows::Forms::Button());
 			   this->DownButtom = (gcnew System::Windows::Forms::Button());
 			   this->LeftButton = (gcnew System::Windows::Forms::Button());
-			   this->label1 = (gcnew System::Windows::Forms::Label());
 			   this->panel1->SuspendLayout();
 			   this->SuspendLayout();
 			   // 
@@ -123,9 +123,9 @@ namespace CppCLRWinformsProjekt {
 			   // 
 			   this->panel1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
 			   this->panel1->CausesValidation = false;
-			   this->panel1->Controls->Add(this->label1);
+			   this->panel1->Controls->Add(this->InfoLabel);
 			   this->panel1->Controls->Add(this->TimeLabel);
-			   this->panel1->Controls->Add(this->SnakeSizeLablel);
+			   this->panel1->Controls->Add(this->SnakeSizeLabel);
 			   this->panel1->Controls->Add(this->StartButton);
 			   this->panel1->Controls->Add(this->PauseButton);
 			   this->panel1->Controls->Add(this->RightButton);
@@ -137,23 +137,36 @@ namespace CppCLRWinformsProjekt {
 			   this->panel1->Size = System::Drawing::Size(151, 500);
 			   this->panel1->TabIndex = 1;
 			   // 
+			   // label1
+			   // 
+			   this->InfoLabel->AutoSize = true;
+			   this->InfoLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				   static_cast<System::Byte>(204)));
+			   this->InfoLabel->Location = System::Drawing::Point(37, 235);
+			   this->InfoLabel->Name = L"label1";
+			   this->InfoLabel->Size = System::Drawing::Size(72, 91);
+			   this->InfoLabel->TabIndex = 8;
+			   this->InfoLabel->Text = L"\r\nУправление:\r\nW - Вверх;\r\nS - Вниз;\r\nA - Влево;\r\nD - Вправо;\r\nP - Пауза; ";
+			   // 
 			   // TimeLabel
 			   // 
 			   this->TimeLabel->AutoSize = true;
 			   this->TimeLabel->Location = System::Drawing::Point(4, 70);
 			   this->TimeLabel->Name = L"TimeLabel";
-			   this->TimeLabel->Size = System::Drawing::Size(113, 13);
+			   this->TimeLabel->Size = System::Drawing::Size(49, 13);
 			   this->TimeLabel->TabIndex = 7;
-			   this->TimeLabel->Text = L"Колличество ходов:  ";
+			   this->TimeLabel->Text = L"Время:  ";
+			   this->TimeLabel->Visible = false;
 			   // 
-			   // SnakeSizeLablel
+			   // SnakeSizeLabel
 			   // 
-			   this->SnakeSizeLablel->AutoSize = true;
-			   this->SnakeSizeLablel->Location = System::Drawing::Point(4, 53);
-			   this->SnakeSizeLablel->Name = L"SnakeSizeLablel";
-			   this->SnakeSizeLablel->Size = System::Drawing::Size(84, 13);
-			   this->SnakeSizeLablel->TabIndex = 6;
-			   this->SnakeSizeLablel->Text = L"Длина змейки:";
+			   this->SnakeSizeLabel->AutoSize = true;
+			   this->SnakeSizeLabel->Location = System::Drawing::Point(4, 53);
+			   this->SnakeSizeLabel->Name = L"SnakeSizeLabel";
+			   this->SnakeSizeLabel->Size = System::Drawing::Size(84, 13);
+			   this->SnakeSizeLabel->TabIndex = 6;
+			   this->SnakeSizeLabel->Text = L"Длина змейки:";
+			   this->SnakeSizeLabel->Visible = false;
 			   // 
 			   // StartButton
 			   // 
@@ -230,17 +243,6 @@ namespace CppCLRWinformsProjekt {
 			   this->LeftButton->Click += gcnew System::EventHandler(this, &Snake_Game::LeftButton_Click);
 			   this->LeftButton->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &Snake_Game::Snake_Game_KeyDown);
 			   // 
-			   // label1
-			   // 
-			   this->label1->AutoSize = true;
-			   this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				   static_cast<System::Byte>(204)));
-			   this->label1->Location = System::Drawing::Point(3, 83);
-			   this->label1->Name = L"label1";
-			   this->label1->Size = System::Drawing::Size(72, 91);
-			   this->label1->TabIndex = 8;
-			   this->label1->Text = L"\r\nУправление:\r\nW - Вверх;\r\nS - Вниз;\r\nA - Влево;\r\nD - Вправо;\r\nP - Пауза; ";
-			   // 
 			   // Snake_Game
 			   // 
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
@@ -270,13 +272,16 @@ namespace CppCLRWinformsProjekt {
 
 		snake->DelSnake();
 
-		SnakeSizeLablel->Text = L"Длина змейки: ";
+		SnakeSizeLabel->Text = L"Длина змейки: ";
 		TimeLabel->Text = L"Время: ";
 		time = 0;
 
 		direction = 1;
 		Running = false;
 		timer1->Stop();
+		SnakeSizeLabel->Visible = false;
+		TimeLabel->Visible = false;
+		InfoLabel->Visible = true;
 		StartButton->Text = "Start";
 	}
 
@@ -330,7 +335,7 @@ namespace CppCLRWinformsProjekt {
 		if (!timer1->Enabled)
 			return;
 		time = time + double(timer1->Interval) / 1000;
-		SnakeSizeLablel->Text = L"Длина змейки: " + snake->SnakeSize;
+		SnakeSizeLabel->Text = L"Длина змейки: " + snake->SnakeSize;
 		TimeLabel->Text = L"Время: " + time;
 
 		if (!apple) appletime = appletime++;
@@ -428,6 +433,9 @@ namespace CppCLRWinformsProjekt {
 		else
 		{
 			Running = true;
+			SnakeSizeLabel->Visible = true;
+			TimeLabel->Visible = true;
+			InfoLabel->Visible = false;
 			timer1->Start();
 			timer1->Interval = 500;
 			StartButton->Text = "Restart";
